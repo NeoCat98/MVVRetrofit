@@ -4,8 +4,11 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.petrlr14.mvvm.database.daos.GitHubDAO
 import com.petrlr14.mvvm.database.entities.GitHubRepo
+import com.petrlr14.mvvm.service.retorfit.GithubServices
+import kotlinx.coroutines.Deferred
+import retrofit2.Response
 
-class GitHubRepoRepository (private val repoDao:GitHubDAO){
+class GitHubRepoRepository (private val repoDao:GitHubDAO, private val githubService: GithubServices){
 
     @WorkerThread
     suspend fun insert(repo:GitHubRepo){
@@ -21,4 +24,7 @@ class GitHubRepoRepository (private val repoDao:GitHubDAO){
         return repoDao.nukeTable()
     }
 
+    fun retrieveReposAsync(user:String): Deferred<Response<List<GitHubRepo>>> {
+        return GithubServices.getGithubService().getRepos(user)
+    }
 }
